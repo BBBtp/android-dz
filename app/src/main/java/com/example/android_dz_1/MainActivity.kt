@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showSystemUi = true)
 @Composable
 fun CreateFigure() {
-    var numbers by rememberSaveable { mutableStateOf(List(0) { it }) }
+    var numbers by rememberSaveable { mutableStateOf(emptyList<Int>()) }
 
     val configuration = LocalConfiguration.current
     val columns =
@@ -85,16 +85,14 @@ fun CreateFigure() {
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_by)),
             modifier = Modifier.weight(1f)
         ) {
-            items(numbers.size) { index ->
-                NumberCard(
-                    number = index,
-                )
+            itemsIndexed(numbers) { _, number ->
+                NumberCard(number)
             }
         }
 
 
         Button(
-            onClick = { numbers = numbers + numbers.size },
+            onClick = { numbers += numbers.size },
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.padding))
                 .size(dimensionResource(id = R.dimen.button_size))
