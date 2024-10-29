@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -49,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.android_dz_1.ui.theme.Androiddz1Theme
+import com.example.android_dz_1.ui.theme.AppColors
+import com.example.android_dz_1.ui.theme.Dimens
 
 
 class MainActivity : ComponentActivity() {
@@ -72,7 +76,10 @@ fun CreateFigure() {
         if (configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT) 3 else 4
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
 
@@ -80,13 +87,13 @@ fun CreateFigure() {
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
-            contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_by)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.space_by)),
+            contentPadding = PaddingValues(Dimens.Padding),
+            verticalArrangement = Arrangement.spacedBy(Dimens.SpaceBy),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.SpaceBy),
             modifier = Modifier.weight(1f)
         ) {
             itemsIndexed(numbers) { _, number ->
-                NumberCard(number)
+                NumberCard(number,columns)
             }
         }
 
@@ -94,37 +101,39 @@ fun CreateFigure() {
         Button(
             onClick = { numbers += numbers.size },
             modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding))
-                .size(dimensionResource(id = R.dimen.button_size))
+                .padding(Dimens.Padding)
+                .size(Dimens.ButtonSize)
 
 
         ) {
-            Icon(Icons.Filled.Add, contentDescription = stringResource(id = R.string.icon_name))
+            Icon(Icons.Filled.Add, contentDescription = "Add")
         }
     }
 
 }
 
 @Composable
-fun NumberCard(number: Int) {
+fun NumberCard(number: Int,columns: Int) {
 
     val backgroundColor = if (number % 2 == 0) {
-        colorResource(id = R.color.red)
+       AppColors.Blue
     } else {
-        colorResource(id = R.color.blue)
+        AppColors.Red
     }
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val itemSize = (screenWidth - Dimens.Padding * (columns + 1)) / columns
 
     Box(
         modifier = Modifier
-            .size(dimensionResource(id = R.dimen.box_size))
-            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.border_radius)))
+            .size(itemSize)
+            .clip(RoundedCornerShape(Dimens.BorderRadius))
             .background(backgroundColor)
             .alpha(0.5F),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = number.toString(),
-            fontSize = dimensionResource(id = R.dimen.text_size_large).value.sp,
+            fontSize = Dimens.TextSizeLarge,
             fontWeight = FontWeight.Bold,
         )
     }
